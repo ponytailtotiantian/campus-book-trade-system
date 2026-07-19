@@ -1,0 +1,32 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
+
+# Database dumps / temp files
+*.sql.bak
+*.tmp
+*.temp
+
+# Office temp files
+~$*.docx
+~$*.xlsx
+~$*.pptx
