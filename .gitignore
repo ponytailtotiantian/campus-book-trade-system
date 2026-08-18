@@ -25,6 +25,7 @@ venv/
 *.sql.bak
 *.tmp
 *.temp
+tmp/
 
 # Office temp files
 ~$*.docx
