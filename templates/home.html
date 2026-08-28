@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container py-4 py-lg-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <div class="hero-kicker mb-2">校园书市 · SALE / DONATION</div>
+                <h1 class="hero-title mb-3">让闲置教材继续发挥价值</h1>
+                <p class="hero-lead mb-4">发布、浏览、购买或领取同学之间流转的教材、考研书和课外读物。</p>
+                <form action="{% url 'catalog:listing_search' %}" method="get" class="row g-2">
+                    <div class="col-12 col-md-9">
+                        <div class="input-group input-group-lg hero-search">
+                            <input class="form-control" type="search" name="q"
+                                   placeholder="搜索书名 / 作者 / ISBN" aria-label="搜索图书">
+                            <button class="btn btn-primary px-4" type="submit">搜索</button>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <a class="btn btn-outline-primary btn-lg w-100" href="{% url 'catalog:listing_list' %}">
+                            浏览全部
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-metrics">
+                    <div class="metric-card">
+                        <span class="metric-number">{{ onsale_count }}</span>
+                        <span class="metric-label">当前在售</span>
+                    </div>
+                    <div class="metric-card metric-card-accent">
+                        <span class="metric-number">{{ listing_count }}</span>
+                        <span class="metric-label">累计发布</span>
+                    </div>
+                    <div class="metric-card metric-card-blue">
+                        <span class="metric-number">{{ user_count }}</span>
+                        <span class="metric-label">注册用户</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-4">
+    <div class="d-flex align-items-center mb-3">
+        <div>
+            <h2 class="section-title mb-1">图书分类</h2>
+            <p class="section-subtitle mb-0">按课程和阅读需求快速找到校园内正在流转的图书</p>
+        </div>
+        <a class="ms-auto btn btn-sm btn-outline-secondary flex-shrink-0" href="{% url 'catalog:listing_list' %}">
+            查看全部
+        </a>
+    </div>
+    {% if categories %}
+        <div class="row g-3">
+            {% for category in categories %}
+                <div class="col-6 col-md-4 col-lg-3">
+                    <a class="category-tile category-tone-{{ forloop.counter0|add:1 }} d-flex align-items-center gap-3"
+                       href="{% url 'catalog:listing_category' category.category_id %}">
+                        <span class="category-initial">{{ category.category_name|slice:":1" }}</span>
+                        <span class="category-copy">
+                            <strong>{{ category.category_name }}</strong>
+                            <small>浏览该分类</small>
+                        </span>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-light border mb-0">暂无可用分类。</div>
+    {% endif %}
+</section>
+
+<section class="container py-4">
+    <div class="d-flex align-items-center mb-3">
+        <div>
+            <h2 class="section-title mb-1">最新上架</h2>
+            <p class="section-subtitle mb-0">最近发布的在售二手书，先到先得</p>
+        </div>
+        <a class="ms-auto btn btn-sm btn-outline-primary flex-shrink-0" href="{% url 'catalog:listing_list' %}">
+            更多商品
+        </a>
+    </div>
+    {% if listings %}
+        <div class="row g-4">
+            {% for listing in listings %}
+                <div class="col-6 col-md-4 col-lg-3">
+                    {% include "catalog/includes/listing_card.html" %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-light border mb-0">目前没有在售商品。</div>
+    {% endif %}
+</section>
+{% endblock %}

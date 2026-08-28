@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}个人中心 | 校园二手书交易系统{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+    <div class="page-heading mb-4">
+        <h1 class="page-title mb-1">个人中心</h1>
+        <p class="page-subtitle mb-0">查看当前校园账号的基本资料</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="profile-card card border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <span class="profile-avatar mx-auto">{{ user.real_name|slice:":1" }}</span>
+                    <h2 class="h5 mt-3 mb-1">{{ user.real_name }}</h2>
+                    <p class="text-secondary small mb-3">{{ user.username }} · {{ user.student_no }}</p>
+                    <span class="badge {% if user.role == 'ADMIN' %}text-bg-warning{% else %}text-bg-primary{% endif %}">
+                        {% if user.role == 'ADMIN' %}管理员{% else %}普通用户{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 p-4 pb-3">
+                    <h2 class="h5 mb-0">账号资料</h2>
+                </div>
+                <div class="card-body p-4 pt-2">
+                    <dl class="row detail-dl g-3 mb-0">
+                        <dt class="col-sm-3">用户名</dt>
+                        <dd class="col-sm-9">{{ user.username }}</dd>
+                        <dt class="col-sm-3">姓名</dt>
+                        <dd class="col-sm-9">{{ user.real_name }}</dd>
+                        <dt class="col-sm-3">学号</dt>
+                        <dd class="col-sm-9">{{ user.student_no }}</dd>
+                        <dt class="col-sm-3">学院</dt>
+                        <dd class="col-sm-9">{{ user.department }}</dd>
+                        <dt class="col-sm-3">手机号</dt>
+                        <dd class="col-sm-9">{{ user.phone }}</dd>
+                        <dt class="col-sm-3">角色</dt>
+                        <dd class="col-sm-9">{{ user.role }}</dd>
+                        <dt class="col-sm-3">信用评分</dt>
+                        <dd class="col-sm-9">{{ user.credit_score }}</dd>
+                        <dt class="col-sm-3">账号状态</dt>
+                        <dd class="col-sm-9">
+                            {% if user.is_active %}
+                                <span class="badge text-bg-success">正常</span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">停用</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

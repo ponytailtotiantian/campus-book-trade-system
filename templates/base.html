@@ -1,0 +1,96 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-hans">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="校园二手书交易系统，支持图书发布、浏览、下单与自提。">
+    <title>{% block title %}{{ page_title|default:"校园二手书交易系统" }}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm site-navbar">
+    <div class="container">
+        <a class="navbar-brand d-inline-flex align-items-center gap-2" href="{% url 'home' %}">
+            <span class="brand-mark">书</span>
+            <span class="brand-title">校园二手书交易系统</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="切换导航">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                       href="{% url 'home' %}">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.namespace == 'catalog' %}active{% endif %}"
+                       href="{% url 'catalog:listing_list' %}">图书/商品</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catalog:listing_list' %}">分类</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catalog:listing_search' %}">搜索</a>
+                </li>
+            </ul>
+            <form class="d-flex col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 nav-search" role="search"
+                  action="{% url 'catalog:listing_search' %}" method="get">
+                <input class="form-control me-2" type="search" name="q"
+                       value="{{ request.GET.q }}" placeholder="搜索书名 / 作者 / ISBN" aria-label="搜索">
+                <button class="btn btn-outline-primary flex-shrink-0" type="submit">搜索</button>
+            </form>
+            <ul class="navbar-nav align-items-lg-center">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
+                           href="{% url 'accounts:profile' %}">
+                            <span class="user-avatar">{{ user.real_name|slice:":1" }}</span>
+                            <span>个人中心</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.namespace == 'marketplace' %}active{% endif %}"
+                           href="{% url 'marketplace:listing_create' %}">
+                            发布二手书
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link text-secondary">退出</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary btn-sm px-3" href="{% url 'accounts:login' %}">登录</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="flex-grow-1">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer py-4 mt-auto">
+    <div class="container d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2 text-center text-md-start">
+        <div>
+            <strong class="footer-brand">校园二手书交易系统</strong>
+            <span class="d-block text-secondary small mt-1">让闲置教材在校园里继续发挥价值</span>
+        </div>
+        <div class="text-secondary small">数据库课程项目 · Django + MySQL</div>
+    </div>
+</footer>
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/base.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}模拟支付 | 校园二手书交易系统{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-xl-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="text-center mb-4">
+                        <span class="badge text-bg-light border mb-3">课程实验模拟</span>
+                        <h1 class="h4 mb-1">模拟支付</h1>
+                        <p class="text-secondary small mb-0">确认商品信息后输入模拟信用卡号</p>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger py-2 small" role="alert">
+                            {{ form.non_field_errors.0 }}
+                        </div>
+                    {% endif %}
+
+                    <dl class="row payment-summary g-2 mb-4">
+                        <dt class="col-5">商品</dt>
+                        <dd class="col-7">{{ listing.book.title }}</dd>
+                        <dt class="col-5">卖家</dt>
+                        <dd class="col-7">{{ listing.seller.real_name }}</dd>
+                        <dt class="col-5">订单金额</dt>
+                        <dd class="col-7">
+                            {% if listing.listing_type == 'DONATION' %}
+                                免费捐赠（¥0.00）
+                            {% else %}
+                                ¥{{ listing.price|floatformat:2 }}
+                            {% endif %}
+                        </dd>
+                    </dl>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label" for="id_card_number">
+                                {{ form.card_number.label }}
+                            </label>
+                            {{ form.card_number }}
+                            {% if form.card_number.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.card_number.errors.0 }}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">仅接收数字，长度 12-19 位</div>
+                        </div>
+
+                        <div class="alert alert-warning small py-2" role="alert">
+                            ⚠ 本页面仅用于课程项目模拟支付，不会进行真实扣款，请勿输入真实银行卡信息。
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">确认支付</button>
+                            <a class="btn btn-outline-secondary"
+                               href="{% url 'catalog:listing_detail' listing.listing_id %}">
+                                返回商品详情
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

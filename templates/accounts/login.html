@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}登录 | 校园二手书交易系统{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="auth-card card border-0 shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="auth-brand mb-4">
+                        <span class="brand-mark">书</span>
+                        <div>
+                            <h1 class="h4 mb-1">登录校园二手书交易系统</h1>
+                            <p class="text-secondary small mb-0">使用校园账号进入个人中心</p>
+                        </div>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger py-2 small mb-3" role="alert">
+                            {{ form.non_field_errors.0 }}
+                        </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label" for="id_username">用户名</label>
+                            <input type="text" name="username" class="form-control form-control-lg" id="id_username"
+                                   value="{{ form.username.value|default:'' }}" placeholder="请输入用户名" required autofocus>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label" for="id_password">密码</label>
+                            <input type="password" name="password" class="form-control form-control-lg" id="id_password"
+                                   placeholder="请输入密码" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">登录</button>
+                    </form>
+
+                    <div class="auth-footer text-center small text-secondary mt-4">
+                        暂无账号请联系管理员开通
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

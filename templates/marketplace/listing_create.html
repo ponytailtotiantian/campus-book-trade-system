@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}发布二手书 | 校园二手书交易系统{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+    <div class="page-heading mb-4">
+        <div>
+            <h1 class="page-title mb-1">发布二手书</h1>
+            <p class="page-subtitle mb-0">填写图书基本信息，并设置本次出售或赠送的二手商品信息</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger py-2 small mb-4" role="alert">
+                    {{ form.non_field_errors.0 }}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white border-0 p-4 pb-3">
+                                <h2 class="h5 mb-0">图书信息</h2>
+                            </div>
+                            <div class="card-body p-4 pt-2">
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_category">{{ form.category.label }}</label>
+                                    {{ form.category }}
+                                    {% if form.category.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.category.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_title">{{ form.title.label }}</label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_isbn">{{ form.isbn.label }}</label>
+                                    {{ form.isbn }}
+                                    {% if form.isbn.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.isbn.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_author">{{ form.author.label }}</label>
+                                    {{ form.author }}
+                                    {% if form.author.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.author.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_publisher">{{ form.publisher.label }}</label>
+                                    {{ form.publisher }}
+                                    {% if form.publisher.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.publisher.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_course_name">{{ form.course_name.label }}</label>
+                                    {{ form.course_name }}
+                                    {% if form.course_name.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.course_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label" for="id_original_price">{{ form.original_price.label }}</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">¥</span>
+                                            {{ form.original_price }}
+                                        </div>
+                                        {% if form.original_price.errors %}
+                                            <div class="invalid-feedback d-block">{{ form.original_price.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="id_edition">{{ form.edition.label }}</label>
+                                        {{ form.edition }}
+                                        {% if form.edition.errors %}
+                                            <div class="invalid-feedback d-block">{{ form.edition.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label" for="id_publish_year">{{ form.publish_year.label }}</label>
+                                        {{ form.publish_year }}
+                                        {% if form.publish_year.errors %}
+                                            <div class="invalid-feedback d-block">{{ form.publish_year.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-white border-0 p-4 pb-3">
+                                <h2 class="h5 mb-0">二手商品信息</h2>
+                            </div>
+                            <div class="card-body p-4 pt-2">
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_condition">{{ form.condition.label }}</label>
+                                    {{ form.condition }}
+                                    {% if form.condition.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.condition.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label d-block">{{ form.listing_type.label }}</label>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        {% for value, label in form.listing_type.field.choices %}
+                                            <div class="form-check">
+                                                <input class="form-check-input listing-type-radio" type="radio"
+                                                       name="{{ form.listing_type.html_name }}"
+                                                       id="id_listing_type_{{ forloop.counter }}"
+                                                       value="{{ value }}"
+                                                       {% if form.listing_type.value == value or not form.is_bound and value == 'SALE' %}checked{% endif %}>
+                                                <label class="form-check-label" for="id_listing_type_{{ forloop.counter }}">
+                                                    {{ label }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% if form.listing_type.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.listing_type.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_price">{{ form.price.label }}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">¥</span>
+                                        <input type="number" name="price" id="id_price" data-price-input
+                                               class="form-control" value="{{ form.price.value|default:'' }}"
+                                               min="0" step="0.01" inputmode="decimal" placeholder="0.00" required>
+                                    </div>
+                                    {% if form.price.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.price.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_stock">{{ form.stock.label }}</label>
+                                    {{ form.stock }}
+                                    {% if form.stock.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.stock.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="id_description">{{ form.description.label }}</label>
+                                    {{ form.description }}
+                                    {% if form.description.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4" id="donation-note-field" {% if form.listing_type.value != 'DONATION' %}hidden{% endif %}>
+                                    <label class="form-label" for="id_donation_note">{{ form.donation_note.label }}</label>
+                                    {{ form.donation_note }}
+                                    {% if form.donation_note.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.donation_note.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg flex-fill">发布商品</button>
+                    <a class="btn btn-outline-secondary btn-lg" href="{% url 'catalog:listing_list' %}">
+                        返回商品列表
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const typeInputs = Array.from(document.querySelectorAll(".listing-type-radio"));
+    const priceInput = document.getElementById("id_price");
+    const donationField = document.getElementById("donation-note-field");
+
+    function syncListingType() {
+        const selected = typeInputs.find(function (input) {
+            return input.checked;
+        });
+        const isDonation = selected && selected.value === "DONATION";
+
+        if (isDonation) {
+            priceInput.value = "0.00";
+            priceInput.disabled = true;
+            priceInput.removeAttribute("required");
+            donationField.hidden = false;
+        } else {
+            priceInput.disabled = false;
+            priceInput.setAttribute("required", "");
+            donationField.hidden = true;
+        }
+    }
+
+    typeInputs.forEach(function (input) {
+        input.addEventListener("change", syncListingType);
+    });
+    syncListingType();
+});
+</script>
+{% endblock %}

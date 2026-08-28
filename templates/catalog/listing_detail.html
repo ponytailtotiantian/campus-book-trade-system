@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}{{ listing.book.title }} | 校园二手书交易系统{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-lg-5">
+    <nav class="mb-3" aria-label="面包屑">
+        <ol class="breadcrumb small mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'catalog:listing_list' %}">图书列表</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'catalog:listing_category' listing.book.category.category_id %}">{{ listing.book.category.category_name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ listing.book.title }}</li>
+        </ol>
+    </nav>
+
+    {% if request.GET.purchase_error %}
+        <div class="alert alert-warning py-2 small" role="alert">
+            {{ request.GET.purchase_error }}
+        </div>
+    {% endif %}
+
+    <section class="detail-shell bg-white border rounded-3 shadow-sm p-3 p-md-4 p-lg-5">
+        <div class="row g-4 g-lg-5 align-items-stretch">
+            <div class="col-lg-5">
+                <div class="book-detail-cover h-100 book-cover-{{ listing.listing_type|lower }}">
+                    <div class="book-cover-top">
+                        <span>校园书市</span>
+                        <span class="cover-type">{{ listing.listing_type }}</span>
+                    </div>
+                    <div class="book-cover-title">{{ listing.book.title }}</div>
+                    <div class="book-cover-author">{{ listing.book.author }}</div>
+                    <div class="book-cover-placeholder">暂无实物图片，展示书籍信息封面</div>
+                </div>
+            </div>
+
+            <div class="col-lg-7 d-flex flex-column">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge type-badge type-{{ listing.listing_type|lower }}">
+                        {% if listing.listing_type == 'DONATION' %}免费捐赠{% else %}售卖{% endif %}
+                    </span>
+                    <span class="badge text-bg-light border">在售</span>
+                    <span class="condition-badge">{{ listing.condition.condition_name }}</span>
+                </div>
+
+                <h1 class="detail-title mb-2">{{ listing.book.title }}</h1>
+                <p class="detail-author text-secondary mb-4">{{ listing.book.author }} · {{ listing.book.category.category_name }}</p>
+
+                <div class="detail-price mb-2">
+                    {% if listing.listing_type == 'DONATION' %}
+                        免费捐赠
+                    {% else %}
+                        ¥{{ listing.price|floatformat:2 }}
+                    {% endif %}
+                </div>
+                <p class="text-secondary small mb-4">
+                    {% if listing.listing_type == 'DONATION' %}
+                        由卖家免费赠出，库存 {{ listing.stock }} 本
+                    {% else %}
+                        当前售价，库存 {{ listing.stock }} 本
+                    {% endif %}
+                </p>
+
+                <div class="detail-meta-list mb-4">
+                    <div class="detail-meta-item">
+                        <span>出版社</span>
+                        <strong>{{ listing.book.publisher|default:"未填写" }}</strong>
+                    </div>
+                    <div class="detail-meta-item">
+                        <span>课程</span>
+                        <strong>{{ listing.book.course_name|default:"未填写" }}</strong>
+                    </div>
+                    <div class="detail-meta-item">
+                        <span>原价</span>
+                        <strong>¥{{ listing.book.original_price }}</strong>
+                    </div>
+                    <div class="detail-meta-item">
+                        <span>版次</span>
+                        <strong>{{ listing.book.edition|default:"未填写" }}</strong>
+                    </div>
+                    <div class="detail-meta-item">
+                        <span>出版年份</span>
+                        <strong>{{ listing.book.publish_year|default:"未填写" }}</strong>
+                    </div>
+                </div>
+
+                <div class="mt-auto">
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        {% if user.is_authenticated and user.user_id == listing.seller_id %}
+                            <button type="button" class="btn btn-secondary btn-lg flex-fill disabled" aria-disabled="true">
+                                不能购买自己的商品
+                            </button>
+                        {% else %}
+                            <a class="btn btn-primary btn-lg flex-fill"
+                               href="{% url 'trade:payment' listing.listing_id %}">
+                                {% if listing.listing_type == 'DONATION' %}申请领取{% else %}立即购买 / 下单{% endif %}
+                            </a>
+                        {% endif %}
+                        <a class="btn btn-outline-secondary btn-lg" href="{% url 'catalog:listing_list' %}">返回列表</a>
+                    </div>
+                    <p class="small text-secondary mt-3 mb-0">本页仅用于课程项目模拟支付，不会进行真实扣款</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-4 mt-0">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="section-heading d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="h5 mb-0">图书详细信息</h2>
+                        <span class="small text-secondary">ISBN {{ listing.book.isbn|default:"未填写" }}</span>
+                    </div>
+                    <dl class="row detail-dl g-2 mb-0">
+                        <dt class="col-sm-4">书名</dt>
+                        <dd class="col-sm-8">{{ listing.book.title }}</dd>
+                        <dt class="col-sm-4">作者</dt>
+                        <dd class="col-sm-8">{{ listing.book.author }}</dd>
+                        <dt class="col-sm-4">出版社</dt>
+                        <dd class="col-sm-8">{{ listing.book.publisher }}</dd>
+                        <dt class="col-sm-4">课程名称</dt>
+                        <dd class="col-sm-8">{{ listing.book.course_name|default:"未填写" }}</dd>
+                        <dt class="col-sm-4">原价</dt>
+                        <dd class="col-sm-8">¥{{ listing.book.original_price }}</dd>
+                        <dt class="col-sm-4">版次</dt>
+                        <dd class="col-sm-8">{{ listing.book.edition|default:"未填写" }}</dd>
+                        <dt class="col-sm-4">出版年份</dt>
+                        <dd class="col-sm-8">{{ listing.book.publish_year|default:"未填写" }}</dd>
+                        <dt class="col-sm-4">成色</dt>
+                        <dd class="col-sm-8">{{ listing.condition.condition_name }}</dd>
+                        <dt class="col-sm-4">商品类型</dt>
+                        <dd class="col-sm-8">
+                            {% if listing.listing_type == 'DONATION' %}捐赠{% else %}售卖{% endif %}
+                        </dd>
+                        <dt class="col-sm-4">当前价格</dt>
+                        <dd class="col-sm-8">
+                            {% if listing.listing_type == 'DONATION' %}免费{% else %}¥{{ listing.price }}{% endif %}
+                        </dd>
+                        <dt class="col-sm-4">库存</dt>
+                        <dd class="col-sm-8">{{ listing.stock }} 本</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="section-heading mb-3">
+                        <h2 class="h5 mb-0">卖家信息</h2>
+                    </div>
+                    <div class="seller-block d-flex align-items-center gap-3 mb-3">
+                        <span class="seller-avatar">{{ listing.seller.real_name|slice:":1" }}</span>
+                        <div>
+                            <div class="fw-semibold">{{ listing.seller.real_name }}</div>
+                            <div class="text-secondary small">校园用户 · {{ listing.seller.role }}</div>
+                        </div>
+                    </div>
+                    <dl class="detail-dl small seller-info-dl mb-0">
+                        <dt>学号</dt>
+                        <dd>{{ listing.seller.student_no }}</dd>
+                        <dt>学院</dt>
+                        <dd>{{ listing.seller.department }}</dd>
+                        <dt>联系电话</dt>
+                        <dd>{{ listing.seller.phone }}</dd>
+                        <dt>发布时间</dt>
+                        <dd>{{ listing.published_at|date:"Y-m-d H:i" }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-body p-4">
+            <div class="section-heading mb-3">
+                <h2 class="h5 mb-0">商品描述</h2>
+            </div>
+            <p class="mb-0 text-secondary">{{ listing.description|default:"卖家暂未填写商品描述。" }}</p>
+            {% if listing.donation_note %}
+                <div class="donation-note mt-3">
+                    <strong class="small d-block mb-1">捐赠说明</strong>
+                    <p class="small mb-0">{{ listing.donation_note }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
