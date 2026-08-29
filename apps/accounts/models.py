@@ -66,5 +66,10 @@ class User(models.Model):
 
         return hashlib.sha256(f"{self.user_id}:{self.password_hash}".encode()).hexdigest()
 
+    def get_session_auth_fallback_hash(self):
+        # The custom session hash above does not use Django's SECRET_KEY
+        # fallback mechanism, so there are no alternative hashes to check.
+        return iter(())
+
     def __str__(self):
         return self.username

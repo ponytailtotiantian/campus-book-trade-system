@@ -11,6 +11,7 @@ urlpatterns = [
     path("marketplace/", include("apps.marketplace.urls")),
     path("trade/", include("apps.trade.urls")),
     path("accounts/", include("apps.accounts.urls")),
+    path("agent/", include("apps.agent.urls")),
 ]
 
 if settings.DEBUG:

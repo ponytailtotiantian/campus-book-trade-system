@@ -37,6 +37,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'catalog:listing_search' %}">搜索</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.namespace == 'agent' %}active{% endif %}"
+                       href="{% url 'agent:chat' %}">AI 助手</a>
+                </li>
             </ul>
             <form class="d-flex col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 nav-search" role="search"
                   action="{% url 'catalog:listing_search' %}" method="get">

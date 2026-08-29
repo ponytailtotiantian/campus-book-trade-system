@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
+    "apps.agent",
     "apps.accounts",
     "apps.catalog",
     "apps.marketplace",
@@ -86,6 +87,7 @@ MIGRATION_MODULES = {
     "pickup": None,
     "reviews": None,
     "admin_dashboard": None,
+    "agent": None,
 }
 
 AUTH_USER_MODEL = "accounts.User"

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}校园二手书 AI 助手{% endblock %}
+
+{% block content %}
+<section class="agent-chat-page py-4">
+    <div class="container">
+        <div class="page-heading mb-3">
+            <div>
+                <div class="hero-kicker">AI Assistant</div>
+                <h1 class="page-title">校园二手书 AI 助手</h1>
+                <p class="page-subtitle mb-0">搜索在售二手书、查看商品详情、获取图书推荐，也可以查询自己的订单。</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="card agent-chat-card shadow-sm"
+                     id="agentChatApp"
+                     data-chat-url="{% url 'agent:chat_api' %}"
+                     data-csrf-token="{{ csrf_token }}">
+                    <div class="card-header bg-white py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="chat-logo">AI</span>
+                            <div>
+                                <strong class="d-block">校园二手书智能助手</strong>
+                                <span class="text-secondary small">只读查询助手，不会修改订单、库存或商品数据。</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="chat-messages p-3" id="chatMessages" aria-live="polite">
+                            <div class="chat-row assistant">
+                                <span class="chat-avatar">AI</span>
+                                <div class="chat-bubble">
+                                    你好，我可以帮你搜索在售二手书、查看商品详情、推荐图书，也可以查询你自己的订单。
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-composer border-top p-3 bg-white">
+                            <form id="chatForm" class="d-flex flex-column gap-2">
+                                <textarea id="chatInput" class="form-control" rows="3" maxlength="1000"
+                                          placeholder="输入消息…" aria-label="输入消息"></textarea>
+                                <div class="d-flex justify-content-end align-items-center gap-2">
+                                    <span id="chatError" class="chat-error small text-danger" role="alert"></span>
+                                    <button id="chatSendBtn" class="btn btn-primary px-4 flex-shrink-0" type="submit">
+                                        发送
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
