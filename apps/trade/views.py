@@ -64,7 +64,6 @@ def _create_mock_order(listing, buyer_id, remark):
                 remark,
             ],
         )
-        cursor.execute("SELECT LAST_INSERT_ID()")
         row = cursor.fetchone()
         if row is None or not row[0]:
             raise PurchaseBlocked("订单创建失败，请稍后重试。")

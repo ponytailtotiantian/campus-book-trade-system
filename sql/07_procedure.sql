@@ -15,6 +15,7 @@ BEGIN
     DECLARE v_price DECIMAL(10,2);
     DECLARE v_stock INT;
     DECLARE v_listing_type VARCHAR(20);
+    DECLARE v_listing_status VARCHAR(20);
     DECLARE v_order_type VARCHAR(20);
     DECLARE v_total_amount DECIMAL(10,2);
     DECLARE v_order_id BIGINT;
@@ -28,8 +29,8 @@ BEGIN
 
     START TRANSACTION;
 
-    SELECT seller_id, price, stock, listing_type
-    INTO v_seller_id, v_price, v_stock, v_listing_type
+    SELECT seller_id, price, stock, listing_type, status
+    INTO v_seller_id, v_price, v_stock, v_listing_type, v_listing_status
     FROM listing
     WHERE listing_id = p_listing_id
     FOR UPDATE;
@@ -42,6 +43,11 @@ BEGIN
     IF p_buyer_id = v_seller_id THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = '买家不能购买自己发布的书籍';
+    END IF;
+
+    IF v_listing_status <> 'ON_SALE' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = '该发布信息当前不在售';
     END IF;
 
     IF v_stock <= 0 THEN
@@ -67,7 +73,7 @@ BEGIN
 
     UPDATE listing
     SET stock = stock - 1,
-        status = CASE WHEN stock - 1 = 0 THEN 'SOLD' ELSE 'ON_SALE' END
+        status = CASE WHEN v_stock - 1 = 0 THEN 'SOLD' ELSE 'ON_SALE' END
     WHERE listing_id = p_listing_id;
 
     SET v_pickup_code = CONCAT('PU', DATE_FORMAT(NOW(), '%Y%m%d'), LPAD(v_order_id, 4, '0'));
@@ -79,6 +85,8 @@ BEGIN
     );
 
     COMMIT;
+
+    SELECT v_order_id AS created_order_id;
 END$$
 
 DELIMITER ;

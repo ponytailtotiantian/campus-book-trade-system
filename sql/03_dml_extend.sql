@@ -52,10 +52,10 @@ VALUES
 INSERT INTO listing (seller_id, book_id, condition_id, listing_type, price, stock, description, donation_note, status)
 VALUES
 (6, 7, 6, 'SALE', 22.00, 1, '操作系统教材，七成新，适合期末复习', NULL, 'ON_SALE'),
-(7, 8, 7, 'DONATION', 0.00, 1, '线性代数教材，愿意免费送给需要的同学', '优先大一新生，校内自提', 'ON_SALE'),
-(8, 9, 8, 'SALE', 28.00, 1, '算法导论，少量划线，不影响阅读', NULL, 'ON_SALE'),
-(9, 10, 9, 'SALE', 15.00, 1, '人间失格，封面有折痕，适合课外阅读', NULL, 'ON_SALE'),
-(10, 6, 10, 'SALE', 30.00, 1, '活着，内页整洁，保存较好', NULL, 'ON_SALE');
+(7, 8, 7, 'DONATION', 0.00, 2, '线性代数教材，愿意免费送给需要的同学', '优先大一新生，校内自提', 'ON_SALE'),
+(8, 9, 8, 'SALE', 28.00, 2, '算法导论，少量划线，不影响阅读', NULL, 'ON_SALE'),
+(9, 10, 9, 'SALE', 15.00, 2, '人间失格，封面有折痕，适合课外阅读', NULL, 'ON_SALE'),
+(10, 6, 10, 'SALE', 30.00, 2, '活着，内页整洁，保存较好', NULL, 'ON_SALE');
 
 -- 7. 更新已有订单状态，形成更多已完成交易
 UPDATE orders
@@ -86,7 +86,13 @@ VALUES
 
 UPDATE listing
 SET status = 'SOLD'
-WHERE listing_id IN (3, 4, 6, 7, 8, 9, 10);
+WHERE listing_id IN (3, 4, 6);
+
+-- 保留部分出售/捐赠发布处于在售状态，便于网站首页、商品列表和 Agent 查询演示
+UPDATE listing
+SET stock = 1,
+    status = 'ON_SALE'
+WHERE listing_id IN (7, 8, 9, 10);
 
 -- 9. 补充自提记录（补足到 10 条）
 INSERT INTO pickup_record (order_id, pickup_point_id, pickup_code, scheduled_time, picked_time, status)

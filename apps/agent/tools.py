@@ -28,7 +28,7 @@ from apps.agent.schemas import (
 
 
 def _onsale_listing_qs():
-    return Listing.objects.filter(status="ON_SALE").select_related(
+    return Listing.objects.filter(status="ON_SALE", stock__gt=0).select_related(
         "book__category", "condition", "seller"
     )
 

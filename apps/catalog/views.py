@@ -22,7 +22,7 @@ def _category_ids_with_descendants(category_id):
 
 def _onsale_listings():
     return (
-        Listing.objects.filter(status="ON_SALE")
+        Listing.objects.filter(status="ON_SALE", stock__gt=0)
         .select_related("book__category", "condition", "seller")
     )
 
@@ -103,6 +103,7 @@ def listing_detail(request, listing_id):
         Listing.objects.select_related("book__category", "condition", "seller"),
         listing_id=listing_id,
         status="ON_SALE",
+        stock__gt=0,
     )
     return render(
         request,

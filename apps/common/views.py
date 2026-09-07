@@ -22,12 +22,14 @@ def home(request):
             )
         )
         context["listings"] = list(
-            Listing.objects.filter(status="ON_SALE")
+            Listing.objects.filter(status="ON_SALE", stock__gt=0)
             .select_related("book__category", "condition", "seller")
             .order_by("-published_at")[:8]
         )
         context["listing_count"] = Listing.objects.count()
-        context["onsale_count"] = Listing.objects.filter(status="ON_SALE").count()
+        context["onsale_count"] = Listing.objects.filter(
+            status="ON_SALE", stock__gt=0
+        ).count()
         context["user_count"] = User.objects.count()
         context["db_ok"] = True
     except Exception:
