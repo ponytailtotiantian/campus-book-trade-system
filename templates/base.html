@@ -32,10 +32,10 @@
                        href="{% url 'catalog:listing_list' %}">图书/商品</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catalog:listing_list' %}">分类</a>
+                    <a class="nav-link" href="{% url 'catalog:listing_list' %}#category-filter">分类</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catalog:listing_search' %}">搜索</a>
+                    <a class="nav-link" href="{% url 'catalog:listing_search' %}#catalog-search">搜索</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.namespace == 'agent' %}active{% endif %}"

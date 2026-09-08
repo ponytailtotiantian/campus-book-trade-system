@@ -482,6 +482,7 @@ a:hover {
 .filter-panel {
     position: sticky;
     top: 1rem;
+    scroll-margin-top: 88px;
 }
 
 .category-list-title {
@@ -493,6 +494,13 @@ a:hover {
 .category-list {
     border-top: 1px solid #e5e7eb;
     padding-top: 12px;
+    scroll-margin-top: 96px;
+}
+
+.filter-panel:target,
+.category-list:target {
+    outline: 3px solid rgba(31, 111, 92, 0.18);
+    outline-offset: 4px;
 }
 
 .category-link {
