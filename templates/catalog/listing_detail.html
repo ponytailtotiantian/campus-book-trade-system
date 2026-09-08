@@ -184,5 +184,33 @@
             {% endif %}
         </div>
     </div>
+
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-body p-4">
+            <div class="section-heading mb-3">
+                <h2 class="h5 mb-0">业务规则说明</h2>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="logic-card">
+                        <strong>发布信息</strong>
+                        <span>图书基础信息来自 book，分类来自 book_category，成色来自 book_condition。</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="logic-card">
+                        <strong>{% if listing.listing_type == 'DONATION' %}捐赠领取{% else %}交易下单{% endif %}</strong>
+                        <span>点击下单后会生成 orders，并同步扣减 listing 库存。</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="logic-card">
+                        <strong>自提与追踪</strong>
+                        <span>订单完成后关联 pickup_record、review 和 audit_log，方便展示完整业务闭环。</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

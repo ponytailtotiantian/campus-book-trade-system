@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}支付成功 | 校园二手书交易系统{% endblock %}
+{% block title %}
+{% if order.order_type == 'DONATION' %}领取成功{% else %}支付成功{% endif %} | 校园二手书交易系统
+{% endblock %}
 
 {% block content %}
 <div class="container py-4 py-lg-5">
@@ -9,16 +11,26 @@
             <div class="card border-0 shadow-sm text-center">
                 <div class="card-body p-4 p-lg-5">
                     <div class="success-icon mx-auto mb-3">✓</div>
-                    <span class="badge text-bg-light border mb-3">模拟支付已完成</span>
-                    <h1 class="h4 mb-1">支付成功！</h1>
-                    <p class="text-secondary small mb-4">本页面仅用于课程项目模拟，不会发生真实扣款</p>
+                    <span class="badge text-bg-light border mb-3">
+                        {% if order.order_type == 'DONATION' %}捐赠领取已确认{% else %}模拟支付已完成{% endif %}
+                    </span>
+                    <h1 class="h4 mb-1">
+                        {% if order.order_type == 'DONATION' %}领取成功！{% else %}支付成功！{% endif %}
+                    </h1>
+                    <p class="text-secondary small mb-4">
+                        {% if order.order_type == 'DONATION' %}
+                            系统已生成 0 元捐赠订单，并同步创建自提记录
+                        {% else %}
+                            本页面仅用于课程项目模拟，不会发生真实扣款
+                        {% endif %}
+                    </p>
 
                     <dl class="row text-start g-2 payment-summary mb-4">
                         <dt class="col-5">订单编号</dt>
                         <dd class="col-7">{{ order.order_id }}</dd>
                         <dt class="col-5">商品</dt>
                         <dd class="col-7">{{ order.listing.book.title }}</dd>
-                        <dt class="col-5">支付金额</dt>
+                        <dt class="col-5">{% if order.order_type == 'DONATION' %}订单金额{% else %}支付金额{% endif %}</dt>
                         <dd class="col-7">¥{{ order.total_amount|floatformat:2 }}</dd>
                     </dl>
 

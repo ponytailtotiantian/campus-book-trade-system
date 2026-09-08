@@ -79,6 +79,21 @@ def payment_view(request, listing_id):
         return _blocked_redirect(listing_id, str(exc))
 
     if request.method == "POST":
+        if listing.listing_type == "DONATION":
+            try:
+                order_id = _create_mock_order(
+                    listing,
+                    request.user.user_id,
+                    "捐赠书籍领取申请已确认",
+                )
+            except PurchaseBlocked as exc:
+                return _blocked_redirect(listing_id, str(exc))
+            except DatabaseError:
+                form = MockPaymentForm()
+                form.add_error(None, "领取订单创建失败，请稍后重试。")
+                return _render_payment(request, listing, form)
+            return redirect("trade:payment_success", order_id=order_id)
+
         form = MockPaymentForm(request.POST)
         if form.is_valid():
             try:

@@ -44,6 +44,57 @@
 </section>
 
 <section class="container py-4">
+    <div class="workflow-panel bg-white border rounded-3 shadow-sm p-3 p-lg-4">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3 mb-4">
+            <div>
+                <h2 class="section-title mb-1">平台业务流程</h2>
+                <p class="section-subtitle mb-0">从发布到自提完成，每一步都对应数据库中的核心表和状态变化</p>
+            </div>
+            <a class="btn btn-sm btn-outline-primary flex-shrink-0" href="{% url 'agent:chat' %}">
+                试用 AI 查询助手
+            </a>
+        </div>
+        <div class="row g-3">
+            <div class="col-6 col-lg">
+                <div class="workflow-step">
+                    <span class="workflow-index">1</span>
+                    <strong>发布图书</strong>
+                    <small>维护 book、listing 数据</small>
+                </div>
+            </div>
+            <div class="col-6 col-lg">
+                <div class="workflow-step">
+                    <span class="workflow-index">2</span>
+                    <strong>购买或领取</strong>
+                    <small>生成 orders 订单</small>
+                </div>
+            </div>
+            <div class="col-6 col-lg">
+                <div class="workflow-step">
+                    <span class="workflow-index">3</span>
+                    <strong>线下自提</strong>
+                    <small>记录 pickup_record</small>
+                </div>
+            </div>
+            <div class="col-6 col-lg">
+                <div class="workflow-step">
+                    <span class="workflow-index">4</span>
+                    <strong>完成评价</strong>
+                    <small>沉淀 review 信用反馈</small>
+                </div>
+            </div>
+            <div class="col-12 col-lg">
+                <div class="workflow-step workflow-step-muted">
+                    <span class="workflow-index">5</span>
+                    <strong>日志追踪</strong>
+                    <small>写入 audit_log 便于验收演示</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-4">
     <div class="d-flex align-items-center mb-3">
         <div>
             <h2 class="section-title mb-1">图书分类</h2>

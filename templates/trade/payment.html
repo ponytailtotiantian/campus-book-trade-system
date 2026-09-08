@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}模拟支付 | 校园二手书交易系统{% endblock %}
+{% block title %}
+{% if listing.listing_type == 'DONATION' %}确认领取{% else %}模拟支付{% endif %} | 校园二手书交易系统
+{% endblock %}
 
 {% block content %}
 <div class="container py-4 py-lg-5">
@@ -10,8 +12,16 @@
                 <div class="card-body p-4 p-lg-5">
                     <div class="text-center mb-4">
                         <span class="badge text-bg-light border mb-3">课程实验模拟</span>
-                        <h1 class="h4 mb-1">模拟支付</h1>
-                        <p class="text-secondary small mb-0">确认商品信息后输入模拟信用卡号</p>
+                        <h1 class="h4 mb-1">
+                            {% if listing.listing_type == 'DONATION' %}确认领取{% else %}模拟支付{% endif %}
+                        </h1>
+                        <p class="text-secondary small mb-0">
+                            {% if listing.listing_type == 'DONATION' %}
+                                捐赠书籍不会产生费用，确认后生成领取订单和自提记录
+                            {% else %}
+                                确认商品信息后输入模拟信用卡号
+                            {% endif %}
+                        </p>
                     </div>
 
                     {% if form.non_field_errors %}
@@ -37,7 +47,7 @@
 
                     <form method="post" novalidate>
                         {% csrf_token %}
-                        <div class="mb-3">
+                        <div class="mb-3" {% if listing.listing_type == 'DONATION' %}hidden{% endif %}>
                             <label class="form-label" for="id_card_number">
                                 {{ form.card_number.label }}
                             </label>
@@ -50,12 +60,18 @@
                             <div class="form-text">仅接收数字，长度 12-19 位</div>
                         </div>
 
-                        <div class="alert alert-warning small py-2" role="alert">
-                            ⚠ 本页面仅用于课程项目模拟支付，不会进行真实扣款，请勿输入真实银行卡信息。
+                        <div class="alert {% if listing.listing_type == 'DONATION' %}alert-success{% else %}alert-warning{% endif %} small py-2" role="alert">
+                            {% if listing.listing_type == 'DONATION' %}
+                                本次为捐赠领取流程，订单金额为 0 元，系统会记录领取人、捐赠人、自提点和订单状态。
+                            {% else %}
+                                本页面仅用于课程项目模拟支付，不会进行真实扣款，请勿输入真实银行卡信息。
+                            {% endif %}
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">确认支付</button>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                {% if listing.listing_type == 'DONATION' %}确认领取{% else %}确认支付{% endif %}
+                            </button>
                             <a class="btn btn-outline-secondary"
                                href="{% url 'catalog:listing_detail' listing.listing_id %}">
                                 返回商品详情

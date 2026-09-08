@@ -226,6 +226,53 @@ a:hover {
     font-size: 0.9rem;
 }
 
+.workflow-panel {
+    background:
+        linear-gradient(135deg, rgba(31, 111, 92, 0.08), rgba(176, 86, 47, 0.06)),
+        #fff;
+}
+
+.workflow-step {
+    position: relative;
+    min-height: 124px;
+    padding: 16px;
+    border: 1px solid #dbe8e2;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.86);
+}
+
+.workflow-step strong,
+.workflow-step small {
+    display: block;
+}
+
+.workflow-step strong {
+    margin: 12px 0 6px;
+    color: var(--cbt-text);
+    font-size: 0.98rem;
+}
+
+.workflow-step small {
+    color: var(--cbt-muted);
+    line-height: 1.5;
+}
+
+.workflow-index {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--cbt-primary);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.workflow-step-muted .workflow-index {
+    background-color: var(--cbt-accent);
+}
+
 .category-tile {
     --tile-color: var(--cbt-primary);
     --tile-soft: var(--cbt-primary-soft);
@@ -616,6 +663,30 @@ a:hover {
     border: 1px solid #f0dfc2;
     border-radius: 8px;
     background-color: #fff9ef;
+}
+
+.logic-card {
+    min-height: 136px;
+    padding: 16px;
+    border: 1px solid #e5e9e7;
+    border-radius: 10px;
+    background-color: #f8faf9;
+}
+
+.logic-card strong,
+.logic-card span {
+    display: block;
+}
+
+.logic-card strong {
+    margin-bottom: 8px;
+    color: var(--cbt-primary-dark);
+}
+
+.logic-card span {
+    color: var(--cbt-muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
 }
 
 .auth-card {
