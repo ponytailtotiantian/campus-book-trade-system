@@ -37,30 +37,63 @@ def _blocked_redirect(listing_id, message):
     return redirect(f"{url}?{urlencode({'purchase_error': message})}")
 
 
-def _render_payment(request, listing, form):
+def _active_pickup_points():
+    return PickupPoint.objects.filter(status="ACTIVE").order_by("pickup_point_id")
+
+
+def _default_pickup_point_id():
+    pickup_point = _active_pickup_points().first()
+    return pickup_point.pickup_point_id if pickup_point else None
+
+
+def _resolve_pickup_point_id(value):
+    if not value:
+        pickup_point_id = _default_pickup_point_id()
+        if pickup_point_id is None:
+            raise PurchaseBlocked("当前没有可用的自提点，暂时无法创建订单。")
+        return pickup_point_id
+
+    try:
+        pickup_point_id = int(value)
+    except (TypeError, ValueError) as exc:
+        raise PurchaseBlocked("请选择有效的自提点。") from exc
+
+    if not PickupPoint.objects.filter(
+        pickup_point_id=pickup_point_id, status="ACTIVE"
+    ).exists():
+        raise PurchaseBlocked("请选择有效的自提点。")
+    return pickup_point_id
+
+
+def _render_payment(request, listing, form, selected_pickup_point_id=None, payment_error=None):
+    try:
+        selected_pickup_point_id = (
+            int(selected_pickup_point_id) if selected_pickup_point_id else None
+        )
+    except (TypeError, ValueError):
+        selected_pickup_point_id = None
+    selected_pickup_point_id = selected_pickup_point_id or _default_pickup_point_id()
     return render(
         request,
         "trade/payment.html",
-        {"listing": listing, "form": form},
+        {
+            "listing": listing,
+            "form": form,
+            "pickup_points": _active_pickup_points(),
+            "selected_pickup_point_id": selected_pickup_point_id,
+            "payment_error": payment_error,
+        },
     )
 
 
-def _create_mock_order(listing, buyer_id, remark):
-    pickup_point = (
-        PickupPoint.objects.filter(status="ACTIVE")
-        .order_by("pickup_point_id")
-        .first()
-    )
-    if pickup_point is None:
-        raise PurchaseBlocked("当前没有可用的自提点，暂时无法创建订单。")
-
+def _create_mock_order(listing, buyer_id, pickup_point_id, remark):
     with connection.cursor() as cursor:
         cursor.callproc(
             "proc_create_order_with_pickup",
             [
                 listing.listing_id,
                 buyer_id,
-                pickup_point.pickup_point_id,
+                pickup_point_id,
                 remark,
             ],
         )
@@ -79,36 +112,63 @@ def payment_view(request, listing_id):
         return _blocked_redirect(listing_id, str(exc))
 
     if request.method == "POST":
+        selected_pickup_point_id = request.POST.get("pickup_point_id")
         if listing.listing_type == "DONATION":
             try:
+                pickup_point_id = _resolve_pickup_point_id(selected_pickup_point_id)
                 order_id = _create_mock_order(
                     listing,
                     request.user.user_id,
+                    pickup_point_id,
                     "捐赠书籍领取申请已确认",
                 )
             except PurchaseBlocked as exc:
-                return _blocked_redirect(listing_id, str(exc))
+                return _render_payment(
+                    request,
+                    listing,
+                    MockPaymentForm(),
+                    selected_pickup_point_id,
+                    str(exc),
+                )
             except DatabaseError:
-                form = MockPaymentForm()
-                form.add_error(None, "领取订单创建失败，请稍后重试。")
-                return _render_payment(request, listing, form)
+                return _render_payment(
+                    request,
+                    listing,
+                    MockPaymentForm(),
+                    selected_pickup_point_id,
+                    "领取订单创建失败，请稍后重试。",
+                )
             return redirect("trade:payment_success", order_id=order_id)
 
         form = MockPaymentForm(request.POST)
         if form.is_valid():
             try:
+                pickup_point_id = _resolve_pickup_point_id(selected_pickup_point_id)
                 order_id = _create_mock_order(
                     listing,
                     request.user.user_id,
+                    pickup_point_id,
                     "模拟信用卡支付成功",
                 )
             except PurchaseBlocked as exc:
-                return _blocked_redirect(listing_id, str(exc))
+                return _render_payment(
+                    request,
+                    listing,
+                    form,
+                    selected_pickup_point_id,
+                    str(exc),
+                )
             except DatabaseError:
-                form.add_error(None, "订单创建失败，请稍后重试。")
+                return _render_payment(
+                    request,
+                    listing,
+                    form,
+                    selected_pickup_point_id,
+                    "订单创建失败，请稍后重试。",
+                )
             else:
                 return redirect("trade:payment_success", order_id=order_id)
-        return _render_payment(request, listing, form)
+        return _render_payment(request, listing, form, selected_pickup_point_id)
 
     return _render_payment(request, listing, MockPaymentForm())
 

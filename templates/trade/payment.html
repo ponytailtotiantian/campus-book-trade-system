@@ -24,9 +24,9 @@
                         </p>
                     </div>
 
-                    {% if form.non_field_errors %}
+                    {% if payment_error or form.non_field_errors %}
                         <div class="alert alert-danger py-2 small" role="alert">
-                            {{ form.non_field_errors.0 }}
+                            {% if payment_error %}{{ payment_error }}{% else %}{{ form.non_field_errors.0 }}{% endif %}
                         </div>
                     {% endif %}
 
@@ -47,6 +47,21 @@
 
                     <form method="post" novalidate>
                         {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label" for="id_pickup_point">自提点</label>
+                            <select class="form-select" id="id_pickup_point" name="pickup_point_id" required>
+                                {% for pickup_point in pickup_points %}
+                                    <option value="{{ pickup_point.pickup_point_id }}"
+                                            {% if selected_pickup_point_id == pickup_point.pickup_point_id %}selected{% endif %}>
+                                        {{ pickup_point.name }}（{{ pickup_point.open_time }}）
+                                    </option>
+                                {% empty %}
+                                    <option value="">暂无可用自提点</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">订单创建后会生成自提记录和取件码，可在订单详情页查看。</div>
+                        </div>
+
                         <div class="mb-3" {% if listing.listing_type == 'DONATION' %}hidden{% endif %}>
                             <label class="form-label" for="id_card_number">
                                 {{ form.card_number.label }}
