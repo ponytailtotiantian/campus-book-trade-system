@@ -96,7 +96,13 @@
                         {% endif %}
                         <a class="btn btn-outline-secondary btn-lg" href="{% url 'catalog:listing_list' %}">返回列表</a>
                     </div>
-                    <p class="small text-secondary mt-3 mb-0">本页仅用于课程项目模拟支付，不会进行真实扣款</p>
+                    <p class="small text-secondary mt-3 mb-0">
+                        {% if listing.listing_type == 'DONATION' %}
+                            本次为课程项目模拟领取流程，不会产生真实费用
+                        {% else %}
+                            本页仅用于课程项目模拟支付，不会进行真实扣款
+                        {% endif %}
+                    </p>
                 </div>
             </div>
         </div>
