@@ -294,4 +294,21 @@ class AgentService:
                     }
                 )
 
+            final_messages = messages + [
+                {
+                    "role": "user",
+                    "content": (
+                        "请根据上面的工具查询结果直接回答用户，"
+                        "不要继续调用工具。回答要简洁，列出商品编号、书名、价格、库存和类型。"
+                    ),
+                }
+            ]
+            final_response = self.client.chat(final_messages)
+            try:
+                final_message = final_response.choices[0].message
+            except (AttributeError, IndexError) as exc:
+                raise DeepSeekAPIError("invalid final response") from exc
+            content = getattr(final_message, "content", None) or "未获取到回答。"
+            return {"reply": content}
+
         return {"error": "智能助手 Tool 调用次数过多，请简化问题后重试。"}
