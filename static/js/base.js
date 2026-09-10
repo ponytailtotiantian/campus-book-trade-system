@@ -50,6 +50,19 @@ document.addEventListener("DOMContentLoaded", function () {
             errorEl.textContent = message;
         }
 
+        function getResponseError(response, data) {
+            if (data && data.error) {
+                return data.error;
+            }
+            if (response.status === 403) {
+                return "页面凭证已过期，请刷新页面后再试。";
+            }
+            if (response.status >= 500) {
+                return "服务器暂时异常，请稍后再试。";
+            }
+            return "请求失败（" + response.status + "），请稍后再试。";
+        }
+
         function createRow(role, text, isTyping) {
             const row = document.createElement("div");
             row.className = "chat-row " + role;
@@ -106,16 +119,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 if (!response.ok || !data || !data.success) {
-                    typingBubble.textContent = "未获取到回答，请稍后再试。";
-                    setError(data && data.error ? data.error : "网络请求失败，请稍后再试。");
+                    const errorMessage = getResponseError(response, data);
+                    typingBubble.textContent = errorMessage;
+                    typingBubble.classList.remove("chat-typing");
+                    setError(errorMessage);
                     return;
                 }
 
                 typingBubble.textContent = data.reply || "未获取到回答，请稍后再试。";
                 typingBubble.classList.remove("chat-typing");
             } catch (_) {
-                typingBubble.textContent = "未获取到回答，请稍后再试。";
-                setError("网络请求失败，请稍后再试。");
+                const errorMessage = "请求没有发出去，请检查网络或刷新页面后再试。";
+                typingBubble.textContent = errorMessage;
+                typingBubble.classList.remove("chat-typing");
+                setError(errorMessage);
             } finally {
                 setLoading(false);
                 input.focus();

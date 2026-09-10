@@ -3,6 +3,7 @@ import logging
 
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
 
 from apps.agent.services import AgentService
@@ -12,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 @require_GET
+@ensure_csrf_cookie
 def agent_chat_page(request):
     return render(request, "agent/chat.html", {"page_title": "校园二手书 AI 助手"})
 
