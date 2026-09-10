@@ -18,7 +18,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 echo "==> Installing system packages"
-dnf -y install git nginx mariadb-server gcc python3.11 python3.11-devel python3.11-pip mysql-devel
+dnf -y --disablerepo='docker-ce-*' --disablerepo='epel*' install git nginx mariadb-server gcc python3.11 python3.11-devel python3.11-pip mysql-devel
 
 echo "==> Starting database and nginx"
 systemctl enable --now mariadb
