@@ -73,25 +73,71 @@ ORDER BY pr.scheduled_time ASC;
 -- 说明：
 -- 1. MySQL 的外键列会自动生成部分索引，但不一定满足筛选 + 排序的复合查询。
 -- 2. 以下索引面向高频查询字段：状态、类型、分类、用户、时间、自提点。
--- 3. 如果重复执行提示索引已存在，说明已经优化过，可跳过对应语句。
+-- 3. 使用临时存储过程判断索引是否存在，避免重复执行脚本时报错。
 
-CREATE INDEX idx_listing_status_type_price_time
-ON listing(status, listing_type, price, published_at);
+DROP PROCEDURE IF EXISTS proc_create_index_if_missing;
 
-CREATE INDEX idx_book_category_title
-ON book(category_id, title);
+DELIMITER $$
 
-CREATE INDEX idx_orders_buyer_status_time
-ON orders(buyer_id, status, created_at);
+CREATE PROCEDURE proc_create_index_if_missing(
+    IN p_table_name VARCHAR(64),
+    IN p_index_name VARCHAR(64),
+    IN p_create_sql TEXT
+)
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = p_table_name
+          AND index_name = p_index_name
+    ) THEN
+        SET @create_index_sql = p_create_sql;
+        PREPARE stmt FROM @create_index_sql;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+    END IF;
+END$$
 
-CREATE INDEX idx_orders_seller_status_time
-ON orders(seller_id, status, created_at);
+DELIMITER ;
 
-CREATE INDEX idx_pickup_point_status_time
-ON pickup_record(pickup_point_id, status, scheduled_time);
+CALL proc_create_index_if_missing(
+    'listing',
+    'idx_listing_status_type_price_time',
+    'CREATE INDEX idx_listing_status_type_price_time ON listing(status, listing_type, price, published_at)'
+);
 
-CREATE INDEX idx_audit_order_time
-ON audit_log(order_id, created_at);
+CALL proc_create_index_if_missing(
+    'book',
+    'idx_book_category_title',
+    'CREATE INDEX idx_book_category_title ON book(category_id, title)'
+);
+
+CALL proc_create_index_if_missing(
+    'orders',
+    'idx_orders_buyer_status_time',
+    'CREATE INDEX idx_orders_buyer_status_time ON orders(buyer_id, status, created_at)'
+);
+
+CALL proc_create_index_if_missing(
+    'orders',
+    'idx_orders_seller_status_time',
+    'CREATE INDEX idx_orders_seller_status_time ON orders(seller_id, status, created_at)'
+);
+
+CALL proc_create_index_if_missing(
+    'pickup_record',
+    'idx_pickup_point_status_time',
+    'CREATE INDEX idx_pickup_point_status_time ON pickup_record(pickup_point_id, status, scheduled_time)'
+);
+
+CALL proc_create_index_if_missing(
+    'audit_log',
+    'idx_audit_order_time',
+    'CREATE INDEX idx_audit_order_time ON audit_log(order_id, created_at)'
+);
+
+DROP PROCEDURE IF EXISTS proc_create_index_if_missing;
 
 -- =========================
 -- 三、优化后 EXPLAIN
