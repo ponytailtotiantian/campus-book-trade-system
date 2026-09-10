@@ -120,10 +120,14 @@
                 <nav class="mt-4" aria-label="分页">
                     <ul class="pagination justify-content-center mb-0">
                         <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-                            <a class="page-link"
-                               href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if selected_category_id %}&category={{ selected_category_id }}{% endif %}&sort={{ sort }}">
-                                上一页
-                            </a>
+                            {% if page_obj.has_previous %}
+                                <a class="page-link"
+                                   href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if selected_category_id %}&category={{ selected_category_id }}{% endif %}&sort={{ sort }}">
+                                    上一页
+                                </a>
+                            {% else %}
+                                <span class="page-link">上一页</span>
+                            {% endif %}
                         </li>
                         {% for num in page_obj.paginator.page_range %}
                             <li class="page-item {% if page_obj.number == num %}active{% endif %}" {% if page_obj.number == num %}aria-current="page"{% endif %}>
@@ -134,10 +138,14 @@
                             </li>
                         {% endfor %}
                         <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-                            <a class="page-link"
-                               href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if selected_category_id %}&category={{ selected_category_id }}{% endif %}&sort={{ sort }}">
-                                下一页
-                            </a>
+                            {% if page_obj.has_next %}
+                                <a class="page-link"
+                                   href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if selected_category_id %}&category={{ selected_category_id }}{% endif %}&sort={{ sort }}">
+                                    下一页
+                                </a>
+                            {% else %}
+                                <span class="page-link">下一页</span>
+                            {% endif %}
                         </li>
                     </ul>
                 </nav>
