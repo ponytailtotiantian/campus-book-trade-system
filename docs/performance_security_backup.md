@@ -45,7 +45,7 @@
 
 - 创建 `campus_readonly` 只读用户，仅授予 `SELECT` 权限。
 - 创建 `campus_app_rw` 应用读写用户，仅授予 `SELECT, INSERT, UPDATE, DELETE, EXECUTE`，不授予 `DROP`、`GRANT` 等高危权限。
-- 创建 `campus_backup` 备份用户，仅授予备份所需的 `SELECT, SHOW VIEW, TRIGGER, LOCK TABLES`。
+- 创建 `campus_backup` 备份用户，仅授予备份所需的 `SELECT, SHOW VIEW, TRIGGER, EVENT, LOCK TABLES`。
 - 生产环境配置保存在 `.env`，不提交 GitHub。
 - Django 生产环境 `DEBUG=False`，表单请求具备 CSRF 防护。
 - 密码字段使用 `password_hash`，不保存明文密码。

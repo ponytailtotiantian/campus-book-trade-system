@@ -28,8 +28,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE
 ON campus_book_trade.*
 TO 'campus_app_rw'@'localhost';
 
--- 备份用户：用于 mysqldump 备份，授予读取、锁表、视图和触发器相关权限。
-GRANT SELECT, SHOW VIEW, TRIGGER, LOCK TABLES
+-- 备份用户：用于 mysqldump 备份，授予读取、锁表、视图、触发器和事件相关权限。
+GRANT SELECT, SHOW VIEW, TRIGGER, EVENT, LOCK TABLES
 ON campus_book_trade.*
 TO 'campus_backup'@'localhost';
 
