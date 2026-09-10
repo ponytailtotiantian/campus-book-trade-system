@@ -6,6 +6,7 @@ APP_DIR="/opt/${APP_NAME}"
 APP_USER="campus"
 REPO_URL="https://github.com/ponytailtotiantian/campus-book-trade-system.git"
 SERVER_NAME="${SERVER_NAME:-8.138.157.74}"
+SERVER_PORT="${SERVER_PORT:-8088}"
 
 DB_NAME="${DB_NAME:-campus_book_trade}"
 DB_USER="${DB_USER:-campus_app}"
@@ -117,9 +118,19 @@ systemctl enable --now ${APP_NAME}
 systemctl restart ${APP_NAME}
 
 echo "==> Installing nginx reverse proxy"
+python3 - <<'PY'
+from pathlib import Path
+
+path = Path("/etc/nginx/nginx.conf")
+text = path.read_text()
+text = text.replace("listen       80;", "listen       8081;", 1)
+text = text.replace("listen       [::]:80;", "listen       [::]:8081;", 1)
+path.write_text(text)
+PY
+
 cat > /etc/nginx/conf.d/${APP_NAME}.conf <<NGINX
 server {
-    listen 80;
+    listen ${SERVER_PORT};
     server_name ${SERVER_NAME};
 
     client_max_body_size 20m;
@@ -146,4 +157,4 @@ nginx -t
 systemctl restart nginx
 
 echo "==> Deployment finished"
-echo "Open: http://${SERVER_NAME}/"
+echo "Open: http://${SERVER_NAME}:${SERVER_PORT}/"
