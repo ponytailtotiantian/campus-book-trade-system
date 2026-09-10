@@ -44,6 +44,14 @@ sql/
   06_trigger.sql
   07_procedure.sql
   08_transaction.sql
+  09_performance_optimization.sql
+  10_security_strategy.sql
+deploy/
+  aliyun_deploy.sh
+  backup_database.sh
+  restore_database.sh
+docs/
+  performance_security_backup.md
 static/
 templates/
 .env.example
@@ -125,6 +133,9 @@ source sql/07_procedure.sql
 - `02_dml.sql`、`03_dml_extend.sql` 导入基础测试数据和扩展测试数据。
 - `05_view.sql`、`06_trigger.sql`、`07_procedure.sql` 创建视图、触发器和存储过程。
 - `04_advanced_query.sql` 是查询演示脚本，`08_transaction.sql` 是事务演示脚本，**不是**项目启动必须执行的初始化脚本。
+- `09_performance_optimization.sql` 用于报告4的 `EXPLAIN`、索引优化和优化前后对比。
+- `10_security_strategy.sql` 用于报告4的数据库用户权限与安全策略演示。
+- `deploy/backup_database.sh`、`deploy/restore_database.sh` 用于报告4的备份与恢复演示。
 - 请勿修改 `sql/` 中的任何文件。
 
 ### 5. 启动 Django
