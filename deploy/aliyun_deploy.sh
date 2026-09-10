@@ -20,9 +20,9 @@ fi
 echo "==> Installing system packages"
 dnf -y --disablerepo='docker-ce-*' --disablerepo='epel*' install git nginx mariadb-server gcc python3.11 python3.11-devel python3.11-pip mysql-devel
 
-echo "==> Starting database and nginx"
+echo "==> Starting database"
 systemctl enable --now mariadb
-systemctl enable --now nginx
+systemctl enable nginx
 
 echo "==> Preparing application user"
 id "${APP_USER}" >/dev/null 2>&1 || useradd --system --create-home --shell /sbin/nologin "${APP_USER}"
